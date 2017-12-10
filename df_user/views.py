@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
 
-# 注册
 def register(request):
+    """注册"""
     return render(request, 'df_user/register.html')
