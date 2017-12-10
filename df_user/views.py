@@ -1,3 +1,6 @@
 from django.shortcuts import render
 
-# Create your views here.
+
+# 注册
+def register(request):
+    return render(request, 'df_user/register.html')
