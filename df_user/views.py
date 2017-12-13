@@ -104,7 +104,7 @@ def info(request):
     user = UserInfo.objects.get(pk=id)
     # print(user)
     context = {'user': user, 'page': 1}
-    print(context)
+    # print(context)
     return render(request, 'df_user/user_center_info.html', context)
 
 

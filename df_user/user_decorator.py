@@ -11,5 +11,6 @@ def login(func):
         else:
             red = HttpResponseRedirect('/user/login/')
             red.set_cookie('url', request.get_full_path())
+            # print(request.get_full_path())
             return red
     return login_func

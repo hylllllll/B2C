@@ -77,4 +77,23 @@ def detail(request, id):
                'news_adv': news_adv,
                'id': int(id)}
     # print(goods)
-    return render(request, 'df_goods/detail.html', context)
+    response = render(request, 'df_goods/detail.html', context)
+
+    # 在详情页设置用户最近浏览记录，用商品id来记录（到cookies）
+    # 先获取cookies中的记录，默认值为空字符串
+    goods_ids = request.COOKIES.get('goods_ids', '')
+    goods_id = '%d'%goods.id
+    if goods_ids != '':  # 判断浏览记录是否为空（新用户没浏览过商品）
+        goods_ids_list = goods_ids.split(',')  # 用逗号将字符串分割（因为存储格式为含逗号的字符串'1, 2, 3'）返回列表['1', '2', '3']
+        if goods_id in goods_ids_list:
+            goods_ids_list.remove(goods_id)  # 如果已存在，删除，后面再加入（以保持最新）
+            goods_ids_list.append(goods_id)  # 在加到最后
+        if len(goods_ids_list)>5:
+            del goods_ids_list[5]  # 多与5个则删除第六个
+        goods_ids = ','.join(goods_ids_list)  # 用','将每个元素拼接为字符串
+    else:  # 为空，直接记录
+        goods_ids = goods_id
+    response.set_cookie('goods_ids', goods_ids)  # 将更新后的数据写入cookies
+
+    return response
+
