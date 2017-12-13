@@ -93,7 +93,7 @@ def info(request):
     # yong hu xin xi
     user = UserInfo.objects.get(pk=id)
     # print(user)
-    context = {'user': user}
+    context = {'user': user, 'page': 1}
     print(context)
     return render(request, 'df_user/user_center_info.html', context)
 
@@ -101,7 +101,7 @@ def info(request):
 def order(request):
     """dingdan"""
 
-    return render(request, 'df_user/user_center_order.html')
+    return render(request, 'df_user/user_center_order.html', {'page': 1})
 
 
 def site(request):
@@ -109,7 +109,7 @@ def site(request):
 
     id = request.session['id']
     user = UserInfo.objects.get(id=id)
-    context = {'user': user}
+    context = {'user': user, 'page': 1}
 
     # ruguo zai dangqian yemian xiugai
     if request.method=='POST':
