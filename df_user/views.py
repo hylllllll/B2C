@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from hashlib import sha1
 from .models import UserInfo
 from django.http import HttpResponseRedirect
+from df_user import user_decorator
 
 def register(request):
     """注册"""
@@ -67,7 +68,9 @@ def user_handel(request):
         s2 = s1.hexdigest()
         # 判断密码是否相等
         if s2==user[0].upwd:
-            red = HttpResponseRedirect('/user/info')
+            url = request.COOKIES.get('url', '/')
+            # red = HttpResponseRedirect('/user/info')
+            red = HttpResponseRedirect(url)
             # 判断是否选中记住用户名,选中为'1',默认为''
             if remember:
                 red.set_cookie('uname', uname)
@@ -75,6 +78,7 @@ def user_handel(request):
                 red.set_cookie('uname', '', max_age=-1)
             request.session['uname'] = uname
             request.session['id'] = user[0].id
+            # print(user[0].id)
             return red
         else:
             context = {'error_uname': 0, 'error_upwd': 1, 'uname': uname, 'upwd': upwd}
@@ -84,10 +88,16 @@ def user_handel(request):
         return render(request, 'df_user/login.html', context)
 
 
+def logout(request):
+    request.session.flush()
+    return redirect('/')
+
+
+@user_decorator.login
 def info(request):
     """用户中心"""
 
-    #利用之前的session
+    # 利用之前的session
     uname = request.session['uname']
     id = request.session['id']
     # yong hu xin xi
@@ -98,12 +108,14 @@ def info(request):
     return render(request, 'df_user/user_center_info.html', context)
 
 
+@user_decorator.login
 def order(request):
     """dingdan"""
 
     return render(request, 'df_user/user_center_order.html', {'page': 1})
 
 
+@user_decorator.login
 def site(request):
     """收货地址"""
 
