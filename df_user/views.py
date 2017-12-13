@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from hashlib import sha1
 from .models import UserInfo
+from df_goods.models import GoodsInfo
 from django.http import HttpResponseRedirect
 from df_user import user_decorator
 
@@ -103,7 +104,17 @@ def info(request):
     # yong hu xin xi
     user = UserInfo.objects.get(pk=id)
     # print(user)
-    context = {'user': user, 'page': 1}
+
+    # 读取最进浏览的cookies,默认空
+    goods_ids = request.COOKIES.get('goods_ids', '')
+    goods_ids_list = goods_ids.split(',')[::-1]  # 倒序，本来是最新的在最后面
+    goods_list = []
+    for goods_id in goods_ids_list:
+        goods_list.append(GoodsInfo.objects.get(id=int(goods_id)))
+    print(goods_list)
+    context = {'user': user,
+               'page': 1,
+               'goods_list': goods_list}
     # print(context)
     return render(request, 'df_user/user_center_info.html', context)
 

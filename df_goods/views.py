@@ -68,7 +68,7 @@ def detail(request, id):
     """一个商品的详细介绍页"""
 
     goods = GoodsInfo.objects.get(pk=id)
-    goods.gclick += goods.gclick
+    goods.gclick += 1
     goods.save()
 
     news_adv = goods.gtype.goodsinfo_set.order_by('-id')[0:2]
@@ -86,8 +86,9 @@ def detail(request, id):
     if goods_ids != '':  # 判断浏览记录是否为空（新用户没浏览过商品）
         goods_ids_list = goods_ids.split(',')  # 用逗号将字符串分割（因为存储格式为含逗号的字符串'1, 2, 3'）返回列表['1', '2', '3']
         if goods_id in goods_ids_list:
+            # print(goods_id, goods_ids_list)
             goods_ids_list.remove(goods_id)  # 如果已存在，删除，后面再加入（以保持最新）
-            goods_ids_list.append(goods_id)  # 在加到最后
+        goods_ids_list.append(goods_id)  # 在加到最后
         if len(goods_ids_list)>5:
             del goods_ids_list[5]  # 多与5个则删除第六个
         goods_ids = ','.join(goods_ids_list)  # 用','将每个元素拼接为字符串
