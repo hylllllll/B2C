@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import TypeInfo, GoodsInfo
 from django.core.paginator import Paginator
+from df_cart.models import CartInfo
+from df_user import user_decorator
 
 
 def index(request):
@@ -72,10 +74,19 @@ def detail(request, id):
     goods.save()
 
     news_adv = goods.gtype.goodsinfo_set.order_by('-id')[0:2]
-    context = {'page': 0,
-               'goods': goods,
-               'news_adv': news_adv,
-               'id': int(id)}
+    try:
+        count = CartInfo.objects.filter(user_id=request.session['id']).count()  # 获取当前用户购物车物品类型数量
+        context = {'page': 0,
+                   'goods': goods,
+                   'news_adv': news_adv,
+                   'id': int(id),
+                   'count': count}
+    except KeyError:
+        context = {'page': 0,
+                   'goods': goods,
+                   'news_adv': news_adv,
+                   'id': int(id),
+                   'count': 0}
     # print(goods)
     response = render(request, 'df_goods/detail.html', context)
 
