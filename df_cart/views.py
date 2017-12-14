@@ -45,3 +45,24 @@ def add(request, gid, count):  # 添加的商品的id以及数量
         return redirect('/cart/')
 
 
+@user_decorator.login
+def edit(request, cart_id, count):
+    try:
+        cart = CartInfo.objects.get(pk=int(cart_id))
+        count1 = cart.count = int(count)
+        cart.save()
+        data = {'ok': 0}
+    except Exception as e:
+        data = {'ok': count1}
+    return JsonResponse(data)
+
+
+@user_decorator.login
+def delete(request, cart_id):
+    try:
+        cart = CartInfo.objects.get(pk=int(cart_id))
+        cart.delete()
+        data = {'ok': 1}
+    except Exception as e:
+        data = {'ok': 0}
+    return JsonResponse(data)
