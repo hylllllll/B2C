@@ -89,7 +89,20 @@
                 }
             })
         })
-    })
+    });
+
+    function go_order() {
+        s = '';
+        $(':checked:not(#check_all)').each(function () {
+            id = $(this).parents('.cart_list_td').attr('id');
+
+            s = s + 'cart_id='+id+'&'
+        });
+        //删除
+
+        s = s.substring(0, s.length-1);
+        location.href = '/order?'+s;
+    }
 </script>
 {% endblock %}
 {% block body_center %}
